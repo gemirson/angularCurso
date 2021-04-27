@@ -1,0 +1,93 @@
+.jumbotron {
+    width: 600px;
+    text-align: center;
+    margin-top: 20px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.table {
+    margin-top: 20px;
+}
+
+.form-control {
+    margin-top: 5px;
+    ;
+}
+
+.btn {
+    margin-top: 5px;
+}
+
+.selecionado {
+    background-color: #017852;
+}
+
+.check_selecionado {
+    padding-top: 5px;
+}
+
+.negrito_selecionado {
+    background-color: #0000;
+}
+
+.cor_contato {
+    width: 20px;
+    height: 20px;
+}
+
+.footer {
+    text-align: center;
+}
+
+.conteudo {
+    display: table;
+    padding: 0px;
+}
+
+.conteudo input {
+    border-radius: 0px;
+}
+
+.conteudo .texto {
+    display: table-cell;
+    padding-left: 0px;
+}
+
+.conteudo .texto input {
+    border-left: 0px;
+    border-radius: 0px 4px 4px 0px;
+}
+
+.conteudo .codigo {
+    width: 6.5rem;
+}
+
+.conteudo input {
+    border-radius: 4px 0px 0px 4px;
+    display: block;
+    width: 100%;
+    height: calc(1.5em + 0.75rem + 2px);
+    padding: 0.375rem 0.75rem;
+    font-size: 1rem;
+    font-weight: 400;
+    line-height: 1.5;
+    color: #495057;
+    background-color: #fff;
+    background-clip: padding-box;
+    border: 1px solid #ced4da;
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+.conteudo .texto input:focus {
+    color: #495057;
+    background-color: #fff;
+    border-color: #80bdff;
+    outline: 0;
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+.conteudo .texto input:visited {
+    border: 2px solid #000000;
+    border-radius: 0px 4px 4px 0px;
+}

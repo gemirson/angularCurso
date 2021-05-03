@@ -4,16 +4,17 @@
     <title>Lista Contatos</title>
     <link rel="stylesheet" href="css/app.css" />
     <link rel="stylesheet" href="css/bootstrap/bootstrap.css" />
-    <script src="ttps://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js "></script>
+
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular-messages.js"></script>
-    <script src="https://igorescobar.github.io/jQuery-Mask-Plugin/js/jquery.mask.min.js"></script>
+
     <script src="js/app.js"></script>
     <script src="js/controller/listaTelefonicaCtrlController.js"></script>
     <script src="js/value/ConfigValue.js"></script>
     <script src="js/services/contatoAPIService.js"></script>
     <script src="js/services/directives/combo.js"></script>
     <script src="js/lib/phone-format-private.js"></script>
+    <script src="js/lib/phone-number.js"></script>
     <script src="js/services/directives/code-country.js"></script>
 
 
@@ -52,7 +53,7 @@
                 </div>
 
                 <div class="texto">
-                    <input type="text" ng-model="contato.nome" placeholder="texto" ng-required="true" name="nome" ng-minlength="10" telefone-formatar/>
+                    <input type="text" ng-model="contato.nome" placeholder="texto" ng-required="true" name="nome" ng-minlength="10" telefone-formatar />
                 </div>
             </div>
 

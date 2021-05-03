@@ -5,6 +5,8 @@ angular
         $scope.contatos = [];
         $scope.operadoras = [];
 
+        $scope.paisSelecionado = {};
+
         $scope.names = [{
             "name": "Israel",
             "dial_code": "+972",

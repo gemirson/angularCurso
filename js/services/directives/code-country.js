@@ -2,28 +2,33 @@ angular.module("listaTelefonica").directive("telefoneFormatar", function($filter
     return {
         require: "ngModel",
         link: function($scope, element, attrs, ctrl) {
-            console.log("$scope", $scope)
-            console.log("Numero Formtado Internacional", formatInternational('BR', formatE164('BR', '11968901311')));
-            // element.mask("+00 (00) 00000 0000");
-            var options = {
-                onKeyPress: function(val, e, field, options) {
-                    putMask();
-                }
+            console.log("Scope", attrs);
+
+            var fomartarNumero = function(value) {
+                console.log("Scope", attrs);
+                if ($scope.paisSelecionado.code === undefined) return;
+                var ayt = PhoneNumber.getAsYouType($scope.paisSelecionado.code);
+                ayt.addChar(value);
+                if (value.length > 2) {
+                    var pn = new PhoneNumber(value, $scope.paisSelecionado.code);
+                    if (pn.getNumber('national') !== undefined) {
+                        ctrl.$setViewValue(pn.getNumber('national'));
+                        ctrl.$render();
+                        return;
+                    }
+
+                };
             }
 
-            $(element).mask('(00) 00000-0000', options);
+            element.bind("keyup", function() {
+                fomartarNumero(ctrl.$viewValue);
+                ctrl.$setViewValue(ctrl.$viewValue);
+                ctrl.$render();
+            });
 
-            function putMask() {
-                var mask;
-                var cleanVal = element[0].value.replace(/\D/g, ''); //pega o valor sem mascara
-                if (cleanVal.length > 10) { //verifica a quantidade de digitos.
-                    mask = "(00) 00000-0000";
-                } else {
-                    mask = "(00) 0000-00009";
-                }
-                $(element).mask(mask, options); //aplica a mascara novamente
-            }
+
+
 
         }
-    };
-});
+    }
+})

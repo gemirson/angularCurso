@@ -984,44 +984,190 @@ angular
                 return pais;
             })
         }
+        
+    
+        class CustomDateTime {            
 
-        var obterDataInternacional = function(correnteData) {
+            static obterParametrosTempo = function(time) {   
+                 //-------------------------- split em horas,minutos e complementados com segundos -------------------------------//        
+                var baseTime = time.split(':');
+                return { horas: baseTime[0], minutos:baseTime[1], segundos:'00'}          
+                
+            }
+            static  obterBaseTempoPadrao = function() {
+                return { horas: '00', minutos:'00', segundos:'00'};
+            } 
+    
+            static  obterDateDefault = function() {
+                return {
+                    dia: '01',
+                    mes: '0',                
+                    ano:'2000' 
+                };
+               
+            }
+
+            static obterParametrosData = function(baseData){
+                return { 
+                    dia: baseData[0],
+                    mes: baseData[1] - 1,
+                    ano: baseData[2] 
+                };
+            }
+            static  ehValida = function(data) {
+                return validaNotNulaNotVazioNotIndefinida(data) && validaFormatoDataBrasil(data);
+            }
+            static  ehValidaTempo = function(time){
+                return validaNotNulaNotVazioNotIndefinida(time) && validaFormatoHorarioBrasil(time);
+            }
+            static  validaNotNulaNotVazioNotIndefinida = function(data) {
+                return Object.is(data,undefined)  ||  Object.is(data,null) ||  Object.is(data,'');
+            }
+           
+            static  validaFormatoDataBrasil = function(data){
+                var regex = /^([0-2][0-9]|(3)[0-1])(\/)(((0)[0-9])|((1)[0-2]))(\/)\d{4}$/g;
+                return regex.test(data);
+            }
+    
+            static  validaFormatoHorarioBrasil = function(time) {
+                var regex = /^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/g;
+                return regex.test(time);
+            }
+            static  ehValidoData = function(date){
+                return Object.prototype.hasOwnProperty.call(date,'dia')   && Object.prototype.hasOwnProperty.call(date,'mes') && Object.prototype.hasOwnProperty.call(date,'ano')
+            }
+            static ehValidoHorario = function(time){
+                return Object.prototype.hasOwnProperty.call(time,'horas') && Object.prototype.hasOwnProperty.call(time,'minutos') && Object.prototype.hasOwnProperty.call(time,'segundos')
+    
+            }
+            static  validaTempo = function(time) { 
+                return time.horas === '00' && time.minutos === '00' && time.segundos === '00'
+            }
+
+           
+            static obterDataTimeISO8601 = function(correnteData, currenteTime) {           
+            
+                if (this.ehValida(correnteData)) {
+                    //-------------------------- split em dia, mes e ano -------------------------------//
+                    var baseData = correnteData.split('/');
+                    var baseTime = this.ehValidaTempo(currenteTime) ? this.obterParametrosTempo(currenteTime) : this.obterBaseTempoPadrao();
+                    return this.formatarDataInternacional(this.obterParametrosData(baseData) , baseTime);
+                }
+    
+                return this.formatarDataInternacional(this.obterDateDefault(), this.obterBaseTempoPadrao());
+            }
+    
+           static formatarDataInternacional = function(data,time) {
+                 
+                if(this.ehValidoData(data) && this.ehValidoHorario(time)) {              
+                    var baseDateTime =  new Date(data.ano,data.mes,data.dia,time.horas,time.minutos,time.segundos);               
+                    if(this.validaTempo(time)) {
+                         //-------------------------- Para time nesse fromato T00:00:00.000Z -------------------------------//
+                        baseDateTime.setUTCHours(0,0,0,0); 
+                    }
+                    return baseDateTime.toISOString();  
+                }            
+                           
+            }
+        }
+
+        var obterDataTimeISO8601 = function(correnteData, currenteTime) {           
+            
             if (ehValida(correnteData)) {
                 //split em dia, mes e ano
                 var baseData = correnteData.split('/');
-                console.log(baseData)
-                return formatarDataInternacional(new Date(baseData[2], baseData[1], baseData[0]));
+                var baseTime = ehValidaTempo(currenteTime) ? obterParametrosTempo(currenteTime) : obterBaseTempoPadrao();
+                return formatarDataInternacional( { dia: baseData[0], mes: baseData[1] - 1, ano:baseData[2] }, baseTime);
             }
+
+            return formatarDataInternacional( { dia: '01', mes: '0', ano:'2000' }, obterBaseTempoPadrao());
         }
+
+        var formatarDataInternacional = function(data,time) {
+             
+            if(ehValidoData(data) && ehValidoHorario(time)) {              
+                var baseDateTime =  new Date(data.ano,data.mes,data.dia,time.horas,time.minutos,time.segundos);               
+                if(validaTempo(time)) {
+                    baseDateTime.setUTCHours(0,0,0,0); 
+                }
+                return baseDateTime.toISOString();  
+            }            
+                       
+        }
+        var obterParametrosTempo = function(time) {           
+            var baseTime = time.split(':');
+            return { horas: baseTime[0], minutos:baseTime[1], segundos:'00'}          
+            
+        }
+        var obterBaseTempoPadrao = function() {
+            return { horas: '00', minutos:'00', segundos:'00'};
+        } 
 
         var ehValida = function(data) {
             return validaNotNulaNotVazioNotIndefinida(data) && validaFormatoDataBrasil(data);
         }
-
+        var ehValidaTempo = function(time){
+            return validaNotNulaNotVazioNotIndefinida(time) && validaFormatoHorarioBrasil(time);
+        }
         var validaNotNulaNotVazioNotIndefinida = function(data) {
             return data !== undefined || data !== null || data !== '';
         }
-
-        var validaFormatoDataBrasil = function(data) {
+       
+        var validaFormatoDataBrasil = function(data){
             var regex = /^([0-2][0-9]|(3)[0-1])(\/)(((0)[0-9])|((1)[0-2]))(\/)\d{4}$/g;
             return regex.test(data);
         }
 
-        var formatarDataInternacional = function(data) {
-            console.log("Data v", data)
-            return $filter('date')(data, 'yyyy-MM-dd');
+        var validaFormatoHorarioBrasil = function(time) {
+            var regex = /^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/g;
+            return regex.test(time);
+        }
+        var ehValidoData = function(date){
+            return Object.prototype.hasOwnProperty.call(date,'dia') && Object.prototype.hasOwnProperty.call(date,'mes') && Object.prototype.hasOwnProperty.call(date,'ano')
+        }
+        var ehValidoHorario = function(time){
+            return Object.prototype.hasOwnProperty.call(time,'horas') && Object.prototype.hasOwnProperty.call(time,'minutos') && Object.prototype.hasOwnProperty.call(time,'segundos')
+
+        }
+        var validaTempo = function(time) { 
+            return time.horas === '00' && time.minutos === '00' && time.segundos === '00'
         }
 
+        console.log("DateTime com horas", obterDataTimeISO8601('21/04/2021','12:25'));
+        console.log("DateTime sem horas", obterDataTimeISO8601('21/04/2021',null));
+        console.log("DateTime com tempo formato incorreto", obterDataTimeISO8601('21/04/2021','12:25:00'));
+        console.log("DateTime com data  formato incorreto", obterDataTimeISO8601(null,'12:25:00'));
+
+        console.log("=====================================================================================");
+
+        console.log("DateTime com horas", CustomDateTime.obterDataTimeISO8601('21/01/2021','12:25'));
+        console.log("DateTime com horas", CustomDateTime.obterDataTimeISO8601('21/02/2021','12:25'));
+        console.log("DateTime com horas", CustomDateTime.obterDataTimeISO8601('21/03/2021','12:25'));
+        console.log("DateTime com horas", CustomDateTime.obterDataTimeISO8601('21/04/2021','12:25'));
+        console.log("DateTime com horas", CustomDateTime.obterDataTimeISO8601('21/05/2021','12:25'));
+        console.log("DateTime com horas", CustomDateTime.obterDataTimeISO8601('21/06/2021','12:25'));
+        console.log("DateTime com horas", CustomDateTime.obterDataTimeISO8601('21/07/2021','12:25'));
+        console.log("DateTime com horas", CustomDateTime.obterDataTimeISO8601('21/08/2021','12:25'));
+        console.log("DateTime com horas", CustomDateTime.obterDataTimeISO8601('21/09/2021','12:25'));
+        console.log("DateTime com horas", CustomDateTime.obterDataTimeISO8601('21/10/2021','12:25'));
+        console.log("DateTime com horas", CustomDateTime.obterDataTimeISO8601('21/11/2021','12:25'));
+        console.log("DateTime com horas", CustomDateTime.obterDataTimeISO8601('21/12/2021','12:25'));
+
+        console.log("DateTime sem horas", CustomDateTime.obterDataTimeISO8601('21/04/2021',null));
+        console.log("DateTime com tempo formato incorreto", CustomDateTime.obterDataTimeISO8601('21/04/2021','12:25:00'));
+        console.log("DateTime com data  formato incorreto", CustomDateTime.obterDataTimeISO8601(null,'12:25:00'));
+        console.log("DateTime com data  formato incorreto", CustomDateTime.obterDataTimeISO8601('21/20','12:25:00'));
+        console.log("DateTime com data  formato incorreto", CustomDateTime.obterDataTimeISO8601('21/20/87','12:25:00'));
+
+
+        console.log("=====================================================================================");
+
+
+
         console.log("Numero formatado", formatLocal('BR', '11968901311'))
-
-        console.log("Data", obterDataInternacional('21/04/2021'));
-
         console.log("Numero formatado", formatLocal('BR', formatE164('BR', '11968901311')))
-
         console.log("Numero Formtado Internacional", formatInternational('BR', formatE164('BR', '11968901311')));
-
         console.log("Numero Formtado Internacional 2", formatNumberForMobileDialing('BR', formatE164('BR', '11968901311')));
-
         console.log("Numero Formatado ", formatE164('BR', '11968901311'));
 
         $scope.LoadSessionData = function(nomePaisSelecionado) {
